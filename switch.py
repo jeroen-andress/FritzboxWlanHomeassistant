@@ -99,7 +99,7 @@ class FritzBox7412WLANSwitch(SwitchEntity):
 
         await asyncio.sleep(int(blocktime))
 
-        if (SID == '0000000000000000'):
+        if SID == '0000000000000000':
             response = f"{challenge}-{hashlib.md5(f'{challenge}-{password}'.encode('UTF-16LE')).hexdigest()}"
             SID, _, _ = await self._request_login(session, response)
         
