@@ -86,22 +86,36 @@ class FritzBox7412WLANSwitch(SwitchEntity):
     async def _request_login(self, session, response=None):
         url = f"{self._hostname}/login_sid.lua{'' if response is None else f'?response={response}'}"
 
-        async with session.get(url) as get_response:
-            root = ET.fromstring(await get_response.text())
-            SID = root.findall('SID')[0].text
-            challenge = root.findall('Challenge')[0].text
-            blocktime = root.findall('BlockTime')[0].text
+        try:
+            async with session.get(url) as get_response:
+                root = ET.fromstring(await get_response.text())
+                SID = root.findall('SID')[0].text
+                challenge = root.findall('Challenge')[0].text
+                blocktime = root.findall('BlockTime')[0].text
 
-            return SID, challenge, blocktime
+                return SID, challenge, blocktime
+        except aiohttp.ClientConnectorError as e:
+            _LOGGER.error(f"Failed to connect to {self._hostname}! {e}")
+            raise e
+        except IndexError as e:
+            _LOGGER.error(f"Communication with fritz box failed!")
+            raise Exception(f"Communication with fritz box failed!")
 
-    async def _get_session_id(self, session, password):
+    def _is_SSID_empty(self, SID) -> bool:
+        return SID == '0000000000000000'
+
+    async def _get_session_id(self, session, password) -> str:
         SID, challenge, blocktime = await self._request_login(session)
 
         await asyncio.sleep(int(blocktime))
 
-        if SID == '0000000000000000':
+        if self._is_SSID_empty(SID):
             response = f"{challenge}-{hashlib.md5(f'{challenge}-{password}'.encode('UTF-16LE')).hexdigest()}"
             SID, _, _ = await self._request_login(session, response)
+
+            if self._is_SSID_empty(SID):
+                _LOGGER.error(f"Login to {self._hostname} failed! Please check your password.")
+                raise Exception(f"Login to {self._hostname} failed! Please check your password.")
         
         return SID
 
