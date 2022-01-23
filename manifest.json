@@ -1,0 +1,9 @@
+{
+  "domain": "wlan_fritzbox_7412",
+  "name": "WLAN FRITZ!Box 7412",
+  "documentation": "https://github.com/jeroen-andress/firtzbox_wlan_homeassistant",
+  "dependencies": [],
+  "codeowners": [],
+  "requirements": [],
+  "version": "0.1.0"
+}
