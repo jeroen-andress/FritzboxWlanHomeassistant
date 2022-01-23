@@ -30,6 +30,8 @@ ssid||SSID of your WLAN. Check your configuration for it.|No
 
 ## Troubleshooting
 
-When the component is loaded, an entry is written in the Home Assistant log: ``WLAN FRITZ!Box 7412 created with hostname <hostname>, ssid <SSID> and init state True``. If this entry cannot be found, the component has not been loaded. Check the configuration.
+When the component is loaded, an entry is written in the Home Assistant log: ``WLAN FRITZ!Box 7412 created with hostname <hostname with leading http://>, ssid <SSID> and init state True``. If this entry cannot be found, the component has not been loaded. Check the configuration.
 
 Whether the WLAN is on or off is stored in the system persistent and is not read out from the Fritz Box. At the first start-up, this state is assumed to be _ON_. Therefore, it may be necessary to manually switch the WLAN on or off in the Fritz Box in order to synchronise the two states.
+
+Check the log for error messages.
