@@ -119,7 +119,7 @@ class FritzBox7412WLANSwitch(SwitchEntity):
             await session.get(f'{self._hostname}/login_sid.lua?logout=1&sid={SID}')
 
     def _dump_state(self, state: bool):
-        pickle.dump(state, open(PERSISTENT_FILE, "wb" ))
+        pickle.dump(state, open(PERSISTENT_FILE, "wb"))
 
     def _load_state(self) -> bool:
         try:
